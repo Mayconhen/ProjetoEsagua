@@ -33,7 +33,7 @@ def excluirProcessoUnico(numero):
                 if indice == 0:
                     continue
                 else:
-                    contatos_processo = contatos_processo.drop(indice )
+                    contatos_processo = contatos_processo.drop(indice)
                     contatos_processo.to_excel('contatos_processo.xlsx', index=False)
             contatos_processo = pd.read_excel("contatos_processo.xlsx")
             for index, _ in enumerate(contatos_processo["Telefone"]):
@@ -340,7 +340,6 @@ def enviarMensagem(mensagem, numero):
 def atualizarPlanilha(processo, index):
     try:
         print("Atualizar")
-        print(processo, index)
         contatos_processo = pd.read_excel("contatos_processo.xlsx")
         contatos_processo.at[index, "Processo"] = processo
         contatos_processo.to_excel('contatos_processo.xlsx', index=False)
@@ -354,7 +353,6 @@ def atualizarPlanilha(processo, index):
 def inserirPlanilha(data=None, index=None, quantidade=None, confirmado=None, codImovel=None, linkImovel=None, suporte=None):
 
     try:
-        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
         print("INSERIR PLANILHA")
         if data != None:
             contatos_processo = pd.read_excel("contatos_processo.xlsx")
@@ -388,13 +386,11 @@ def inserirPlanilha(data=None, index=None, quantidade=None, confirmado=None, cod
         print(e)
         print("ERRO CONTROLADO")
         time.sleep(2)
-        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
         inserirPlanilha(data=data, index=index, quantidade=quantidade, confirmado=confirmado, codImovel=codImovel, linkImovel=linkImovel, suporte=suporte)
 
 
 def pegarDados(data=None, index=None, quantidade=None, confirmado=None, codImovel=None, linkImovel=None, suporte=None):
     try:
-        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
         if data != None:
             contatos_processo = pd.read_excel("contatos_processo.xlsx")
             return contatos_processo.at[index, "Data"]
@@ -423,7 +419,6 @@ def pegarDados(data=None, index=None, quantidade=None, confirmado=None, codImove
         
         print("ERRO CONTROLADO")
         time.sleep(2)
-        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
         pegarDados(data=data, index=index, quantidade=quantidade, confirmado=confirmado, codImovel=codImovel, linkImovel=linkImovel, suporte=suporte)
         
 
@@ -446,7 +441,6 @@ def integrarPlanilhas():
                     'suporte': contatos_processo["suporte"][indexProcesso],
                     'notifica': contatos_processo["notifica"][indexProcesso]
                 }
-                print(dadosProcesso)
                 dadosArray.append(dadosProcesso)
         except Exception as e:
             dados = {

@@ -1,4 +1,5 @@
 from importacoes import *
+import random
 
 def enviarMensagem(mensagem, numero):
     url = "https://v5.chatpro.com.br/chatpro-459d5f834c/api/v1/send_message"
@@ -67,6 +68,8 @@ class planilhauto:
                 if numero not in dados:
                     dados.append(numero)
                     mensagem = f"Olá, tudo bem? verificamos que você buscou um imóvel no nosso ZAP imóveis.\nDeseja realizar uma visita?\n1 - Sim\n2 - Não"
+                    sleep = random.randint(1, 10)
+                    time.sleep(sleep)
                     enviarMensagem(mensagem=mensagem, numero=str(numero))
                 planilha_checados.loc[indice_planilha_contatos, 'Telefone'] = numero
                 indice_planilha_contatos += 1
