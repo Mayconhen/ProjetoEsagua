@@ -5,70 +5,101 @@ import requests
 def encaminharMensagem(mensagem, numero):
     mensagemWP = f"O contato {numero}, contatou o suporte com a seguinte mensagem:\n"
     mensagemWP += mensagem
-    enviarMensagem(mensagem=mensagemWP, numero="21990033942")
+    enviarMensagem(mensagem=mensagemWP, numero="21992193853")
 
 def verificarProcesso(numero):
-    contatos_processo = pd.read_excel("contatos_processo.xlsx")
-    for index, _ in enumerate(contatos_processo["Telefone"]):
-        if str(contatos_processo["Telefone"][index]) == str(numero):
-            return contatos_processo["Processo"][index], index
-
-def excluirProcessoUnico(numero):
-    contatos_processo = pd.read_excel("contatos_processo.xlsx")
-    dados = []
-    i = 0
-    for index, _ in enumerate(contatos_processo["Telefone"]):
-        if str(numero) == str(contatos_processo["Telefone"][index]):
-            dados.append(index)
-            i = index
-    if len(dados) > 1:
-        for indice in range(i):
-            if indice == 0:
-                continue
-            else:
-                contatos_processo = contatos_processo.drop(indice )
-                contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+    try:
         contatos_processo = pd.read_excel("contatos_processo.xlsx")
         for index, _ in enumerate(contatos_processo["Telefone"]):
+            if str(contatos_processo["Telefone"][index]) == str(numero):
+                return contatos_processo["Processo"][index], index
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        verificarProcesso(numero)
+
+def excluirProcessoUnico(numero):
+    try:
+        contatos_processo = pd.read_excel("contatos_processo.xlsx")
+        dados = []
+        i = 0
+        for index, _ in enumerate(contatos_processo["Telefone"]):
             if str(numero) == str(contatos_processo["Telefone"][index]):
-                return index
-    return False
+                dados.append(index)
+                i = index
+        if len(dados) > 1:
+            for indice in range(i):
+                if indice == 0:
+                    continue
+                else:
+                    contatos_processo = contatos_processo.drop(indice )
+                    contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            for index, _ in enumerate(contatos_processo["Telefone"]):
+                if str(numero) == str(contatos_processo["Telefone"][index]):
+                    return index
+        return False
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        excluirProcessoUnico(numero)
 
     
 
 def excluirProcesso(imovel, numero):
-    contatos_processo = pd.read_excel("contatos_processo.xlsx")
-    for index, _ in enumerate(contatos_processo["Telefone"]):
-        if str(numero) == str(contatos_processo["Telefone"][index]) and str(imovel) != str(contatos_processo["codImovel"][index]):
-            contatos_processo = contatos_processo.drop(index)
-            contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+    try:
+        contatos_processo = pd.read_excel("contatos_processo.xlsx")
+        for index, _ in enumerate(contatos_processo["Telefone"]):
+            if str(numero) == str(contatos_processo["Telefone"][index]) and str(imovel) != str(contatos_processo["codImovel"][index]):
+                contatos_processo = contatos_processo.drop(index)
+                contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        excluirProcesso(imovel, numero)
 
 def contarImoveis(numero):
-    array = []
-    contatos = pd.read_excel("contatos.xlsx")
-    for index, contato in enumerate(contatos["Telefone"]):
-        if str(contato) == numero:
-            dados = {}
-            dados["Código do imóvel"] = contatos["Código do imóvel"][index]
-            link = str(contatos["link"][index]).split(",")
-            dados["link"] = link[1]
-            dados["index"] = index
-            array.append(dados)
-    return array
+    try:
+        array = []
+        contatos = pd.read_excel("contatos.xlsx")
+        for index, contato in enumerate(contatos["Telefone"]):
+            if str(contato) == numero:
+                dados = {}
+                dados["Código do imóvel"] = contatos["Código do imóvel"][index]
+                link = str(contatos["link"][index]).split(",")
+                dados["link"] = link[1]
+                dados["index"] = index
+                array.append(dados)
+        return array
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        contarImoveis(numero)
 
 def pegarIndex(numero, indexImovel):
-    imoveis = []
-    contatos_processo = pd.read_excel("contatos_processo.xlsx")
-    for index, _ in enumerate(contatos_processo["Telefone"]):
-        dados = {}
-        if str(contatos_processo["Telefone"][index]) == str(numero):
-            dados["index"] = index
-            dados["imovel"] = contatos_processo["codImovel"][index]
-            imoveis.append(dados)
-    for _ in imoveis[int(indexImovel)]:
-        for indexThird, _ in enumerate(contatos_processo["Telefone"]):
-            if str(imoveis[int(indexImovel)]["imovel"]) == str(contatos_processo["codImovel"][indexThird]) and str(numero == str(contatos_processo["Telefone"][indexThird])):
-                return indexThird
+    try:
+        imoveis = []
+        contatos_processo = pd.read_excel("contatos_processo.xlsx")
+        for index, _ in enumerate(contatos_processo["Telefone"]):
+            dados = {}
+            if str(contatos_processo["Telefone"][index]) == str(numero):
+                dados["index"] = index
+                dados["imovel"] = contatos_processo["codImovel"][index]
+                imoveis.append(dados)
+        for _ in imoveis[int(indexImovel)]:
+            for indexThird, _ in enumerate(contatos_processo["Telefone"]):
+                if str(imoveis[int(indexImovel)]["imovel"]) == str(contatos_processo["codImovel"][indexThird]) and str(numero == str(contatos_processo["Telefone"][indexThird])):
+                    return indexThird
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        pegarIndex(numero, indexImovel)
+    
 
 def enviarEmail(data, numero, linkImovel):
     email = 'itaimoveis7@gmail.com'
@@ -307,118 +338,166 @@ def enviarMensagem(mensagem, numero):
 
 
 def atualizarPlanilha(processo, index):
-    contatos_processo = pd.read_excel("contatos_processo.xlsx")
-    contatos_processo.at[index, "Processo"] = processo
-    contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+    try:
+        print("Atualizar")
+        print(processo, index)
+        contatos_processo = pd.read_excel("contatos_processo.xlsx")
+        contatos_processo.at[index, "Processo"] = processo
+        contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        print(processo, index)
+        time.sleep(2)
+        atualizarPlanilha(processo, index)
 
 def inserirPlanilha(data=None, index=None, quantidade=None, confirmado=None, codImovel=None, linkImovel=None, suporte=None):
 
-    print("INSERIR PLANILHA")
-    if data != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        contatos_processo.at[index, "Data"] = data
-        contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+    try:
+        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
+        print("INSERIR PLANILHA")
+        if data != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            contatos_processo.at[index, "Data"] = data
+            contatos_processo.to_excel('contatos_processo.xlsx', index=False)
 
-    if quantidade != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        contatos_processo.at[index, "Quantidade"] = quantidade
-        contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+        if quantidade != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            contatos_processo.at[index, "Quantidade"] = quantidade
+            contatos_processo.to_excel('contatos_processo.xlsx', index=False)
 
-    if confirmado != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        contatos_processo.at[index, "Confirmado"] = confirmado
-        contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+        if confirmado != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            contatos_processo.at[index, "Confirmado"] = confirmado
+            contatos_processo.to_excel('contatos_processo.xlsx', index=False)
 
-    if codImovel != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        contatos_processo.at[index, "codImovel"] = codImovel
-        contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+        if codImovel != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            contatos_processo.at[index, "codImovel"] = codImovel
+            contatos_processo.to_excel('contatos_processo.xlsx', index=False)
 
-    if linkImovel != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        contatos_processo.at[index, "linkImovel"] = linkImovel
-        contatos_processo.to_excel('contatos_processo.xlsx', index=False)
-    if suporte != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        contatos_processo.at[index, "suporte"] = suporte
-        contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+        if linkImovel != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            contatos_processo.at[index, "linkImovel"] = linkImovel
+            contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+        if suporte != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            contatos_processo.at[index, "suporte"] = suporte
+            contatos_processo.to_excel('contatos_processo.xlsx', index=False)
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
+        inserirPlanilha(data=data, index=index, quantidade=quantidade, confirmado=confirmado, codImovel=codImovel, linkImovel=linkImovel, suporte=suporte)
 
 
 def pegarDados(data=None, index=None, quantidade=None, confirmado=None, codImovel=None, linkImovel=None, suporte=None):
-    if data != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        return contatos_processo.at[index, "Data"]
+    try:
+        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
+        if data != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            return contatos_processo.at[index, "Data"]
 
-    if quantidade != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        return contatos_processo.at[index, "Quantidade"]
+        if quantidade != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            return contatos_processo.at[index, "Quantidade"]
+            
+        if confirmado != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            return contatos_processo.at[index, "Confirmado"]
         
-    if confirmado != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        return contatos_processo.at[index, "Confirmado"]
-    
-    if codImovel != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        return contatos_processo.at[index, "codImovel"]
-    
-    if linkImovel != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        return contatos_processo.at[index, "linkImovel"]
-    
-    if suporte != None:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-        return contatos_processo.at[index, "suporte"]
+        if codImovel != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            return contatos_processo.at[index, "codImovel"]
+        
+        if linkImovel != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            return contatos_processo.at[index, "linkImovel"]
+        
+        if suporte != None:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            return contatos_processo.at[index, "suporte"]
+    except Exception as e:
+        print(e)
+        
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        print(data, index, quantidade, confirmado, codImovel, linkImovel, suporte)
+        pegarDados(data=data, index=index, quantidade=quantidade, confirmado=confirmado, codImovel=codImovel, linkImovel=linkImovel, suporte=suporte)
         
 
 
 def integrarPlanilhas():
-    dadosArray = []
-    contatos_checados = pd.read_excel("contatos_checados.xlsx")
     try:
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-    except Exception as e:
-        dados = {
-                'Telefone': "0",
-                'Processo': "0",
-                'Data': "Não",
-                'Confirmado': "Não",
-                'Quantidade': "0",
-                'codImovel': "Não",
-                'linkImovel': "Não",
-                'suporte': "Não"
-            }
-
-        dadosArray.append(dados)
-
-        plan = pd.DataFrame(dadosArray)
-
-        plan.to_excel("contatos_processo.xlsx", index=False)
-
-        contatos_processo = pd.read_excel("contatos_processo.xlsx")
-
-    for index, item in enumerate(contatos_checados["Telefone"]):
-        if item == 1:
-            continue
-        if item not in [i for i in contatos_processo["Telefone"]]:
+        dadosArray = []
+        contatos_checados = pd.read_excel("contatos_checados.xlsx")
+        try:
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
+            for indexProcesso, _ in enumerate(contatos_processo["Telefone"]):
+                dadosProcesso = {
+                    'Telefone': contatos_processo["Telefone"][indexProcesso],
+                    'Processo': contatos_processo["Processo"][indexProcesso],
+                    'Data': contatos_processo["Data"][indexProcesso],
+                    'Confirmado': contatos_processo["Confirmado"][indexProcesso],
+                    'Quantidade': contatos_processo["Quantidade"][indexProcesso],
+                    'codImovel': contatos_processo["codImovel"][indexProcesso],
+                    'linkImovel': contatos_processo["linkImovel"][indexProcesso],
+                    'suporte': contatos_processo["suporte"][indexProcesso],
+                    'notifica': contatos_processo["notifica"][indexProcesso]
+                }
+                print(dadosProcesso)
+                dadosArray.append(dadosProcesso)
+        except Exception as e:
             dados = {
-                'Telefone': item,
-                'Processo': 2,
-                'Data': "Não",
-                'Confirmado': "Não",
-                'Quantidade': "0",
-                'codImovel': contatos_checados['Código do imóvel'][index],
-                'linkImovel': contatos_checados['link'][index],
-                'suporte': "Não"
-            }
+                    'Telefone': "0",
+                    'Processo': "0",
+                    'Data': "Não",
+                    'Confirmado': "Não",
+                    'Quantidade': "0",
+                    'codImovel': "Não",
+                    'linkImovel': "Não",
+                    'suporte': "Não",
+                    'notifica': "Não"
+                }
 
             dadosArray.append(dados)
 
-    if len(dadosArray) > 0:
-        plan = pd.DataFrame(dadosArray)
+            plan = pd.DataFrame(dadosArray)
 
-        plan.to_excel("contatos_processo.xlsx", index=False)
+            plan.to_excel("contatos_processo.xlsx", index=False)
 
+            contatos_processo = pd.read_excel("contatos_processo.xlsx")
 
+        for index, item in enumerate(contatos_checados["Telefone"]):
+            if item == 1:
+                continue
+            if item not in [i for i in contatos_processo["Telefone"]]:
+                dados = {
+                    'Telefone': item,
+                    'Processo': 2,
+                    'Data': "Não",
+                    'Confirmado': "Não",
+                    'Quantidade': "0",
+                    'codImovel': contatos_checados['Código do imóvel'][index],
+                    'linkImovel': contatos_checados['link'][index],
+                    'suporte': "Não",
+                    'notifica': "Não"
+                }
+
+                dadosArray.append(dados)
+
+        if len(dadosArray) > 0:
+            plan = pd.DataFrame(dadosArray)
+
+            plan.to_excel("contatos_processo.xlsx", index=False)
+
+    except Exception as e:
+        print(e)
+        print("ERRO CONTROLADO")
+        time.sleep(2)
+        integrarPlanilhas()
+    
 
 def mensagemRecebida(json):
     dados = json

@@ -119,7 +119,7 @@ if __name__ == "__main__":
     with lock:
         y = threading.Thread(target=verificarProcessos)
         y.start()
-    exportarContatos()
+    # exportarContatos()
     integrarPlanilhas()
     # enviarNotificacao()
     iniciarServer()
