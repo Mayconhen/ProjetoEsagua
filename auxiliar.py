@@ -26,6 +26,8 @@ def excluirProcessoUnico(numero):
         i = 0
         for index, _ in enumerate(contatos_processo["Telefone"]):
             if str(numero) == str(contatos_processo["Telefone"][index]):
+                print(index)
+                print("ADICIONANDO NO ARRAY")
                 dados.append(index)
                 i = index
         if len(dados) > 1:
@@ -33,6 +35,8 @@ def excluirProcessoUnico(numero):
                 if indice == 0:
                     continue
                 else:
+                    print(indice)
+                    print("APAGANDO DA PLANILHA")
                     contatos_processo = contatos_processo.drop(indice)
                     contatos_processo.to_excel('contatos_processo.xlsx', index=False)
             contatos_processo = pd.read_excel("contatos_processo.xlsx")
